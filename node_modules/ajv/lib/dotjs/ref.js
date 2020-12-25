@@ -22,7 +22,7 @@ module.exports = function generate_ref(it, $keyword, $ruleType) {
     if ($refVal === undefined) {
       var $message = it.MissingRefError.message(it.baseId, $schema);
       if (it.opts.missingRefs == 'fail') {
-        it.logger.error($message);
+        console.error($message);
         var $$outStack = $$outStack || [];
         $$outStack.push(out);
         out = ''; /* istanbul ignore else */
@@ -40,8 +40,7 @@ module.exports = function generate_ref(it, $keyword, $ruleType) {
         }
         var __err = out;
         out = $$outStack.pop();
-        if (!it.compositeRule && $breakOnError) {
-          /* istanbul ignore if */
+        if (!it.compositeRule && $breakOnError) { /* istanbul ignore if */
           if (it.async) {
             out += ' throw new ValidationError([' + (__err) + ']); ';
           } else {
@@ -54,7 +53,7 @@ module.exports = function generate_ref(it, $keyword, $ruleType) {
           out += ' if (false) { ';
         }
       } else if (it.opts.missingRefs == 'ignore') {
-        it.logger.warn($message);
+        console.warn($message);
         if ($breakOnError) {
           out += ' if (true) { ';
         }
@@ -74,7 +73,7 @@ module.exports = function generate_ref(it, $keyword, $ruleType) {
         out += ' if (' + ($nextValid) + ') { ';
       }
     } else {
-      $async = $refVal.$async === true || (it.async && $refVal.$async !== false);
+      $async = $refVal.$async === true;
       $refCode = $refVal.code;
     }
   }
@@ -101,7 +100,7 @@ module.exports = function generate_ref(it, $keyword, $ruleType) {
       if ($breakOnError) {
         out += ' var ' + ($valid) + '; ';
       }
-      out += ' try { await ' + (__callValidate) + '; ';
+      out += ' try { ' + (it.yieldAwait) + ' ' + (__callValidate) + '; ';
       if ($breakOnError) {
         out += ' ' + ($valid) + ' = true; ';
       }
